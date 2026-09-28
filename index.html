@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>영국 영어 발음장</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:rgb(244,247,246);padding:18px;display:flex;justify-content:center}
+.container{background:white;padding:22px;border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,.06);max-width:650px;width:100%}
+h1{text-align:center;color:rgb(44,62,80);font-size:22px;margin:5px 0 20px}
+.word-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 8px;border-bottom:1px solid rgb(235,235,235)}
+.word-info{display:flex;flex-direction:column;gap:5px}
+.english-line{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.english{font-size:19px;font-weight:700;color:rgb(44,62,80)}
+.pron{font-size:13px;color:rgb(100,110,115);background:rgb(239,243,245);padding:3px 6px;border-radius:5px}
+.meaning{font-size:14px;color:rgb(39,150,90)}
+.play{background:rgb(44,112,180);color:white;border:0;border-radius:8px;padding:10px 13px;font-size:14px;font-weight:bold;white-space:nowrap}
+.play:active{transform:scale(.96);background:rgb(35,90,150)}
+.msg{text-align:center;font-size:12px;color:rgb(110,110,110);margin-top:15px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🇬🇧 영국 영어 발음장</h1>
+<div id="list"></div>
+<div class="msg" id="msg">🔊 버튼을 누르면 영국식 발음이 재생됩니다.</div>
+</div>
+<script>
+const google="https://ssl.gstatic.com/dictionary/static/sounds/20200429/";
+const youdao="https://dict.youdao.com/dictvoice?type=1&audio=";
+const ateAudio="https://dict.youdao.com/dictvoice?type=2&audio=ate";
+const words=[
+{en:"actually",ko:"액추얼리",mean:"실제로, 사실은",src:"alt"},
+{en:"aggravation",ko:"애그러베이션",mean:"악화, 짜증나는 일",file:"aggravation--_gb_1.mp3"},
+{en:"anchor",ko:"앵커",mean:"닻, 정신적 지주",file:"anchor--_gb_1.mp3"},
+{en:"appear",ko:"어피어",mean:"나타나다, ~처럼 보이다",file:"appear--_gb_1.mp3"},
+{en:"beautician",ko:"뷰티션",mean:"미용사",file:"beautician--_gb_1.mp3"},
+{en:"admitting",ko:"어드미팅",mean:"인정하는",src:"alt"},
+{en:"ambitious",ko:"앰비셔스",mean:"야심 있는",file:"ambitious--_gb_1.mp3"},
+{en:"answer",ko:"앤서",mean:"대답, 대답하다",file:"answer--_gb_1.mp3"},
+{en:"architect",ko:"아키텍트",mean:"건축가, 설계자",file:"architect--_gb_1.mp3"},
+{en:"adolescent",ko:"애덜레슨트",mean:"청소년, 사춘기의",file:"adolescent--_gb_1.mp3"},
+{en:"ambitiously",ko:"앰비셔슬리",mean:"야심 차게",file:"ambitiously--_gb_1.mp3"},
+{en:"anti-clockwise",ko:"앤티 클락와이즈",mean:"시계 반대 방향으로",src:"alt"},
+{en:"ate",ko:"에이트",mean:"먹었다 (eat의 과거형)",src:"ate"},
+{en:"beige",ko:"베이쥬",mean:"베이지색",file:"beige--_gb_1.mp3"},
+{en:"blankly",ko:"블랭클리",mean:"멍하니",file:"blankly--_gb_1.mp3"}
+];
+const list=document.getElementById("list");
+const msg=document.getElementById("msg");
+let a=null;
+words.forEach((w,i)=>{
+  const d=document.createElement("div");
+  d.className="word-row";
+  d.innerHTML='<div class="word-info"><div class="english-line"><span class="english">'+(i+1)+'. '+w.en+'</span><span class="pron">'+w.ko+'</span></div><div class="meaning">'+w.mean+'</div></div><button class="play" onclick="playAudio('+i+')">🔊 UK 발음</button>';
+  list.appendChild(d)
+});
+function playAudio(i){
+  if(a){a.pause();a.currentTime=0}
+  const w=words[i];
+  let url=w.src==="ate"?ateAudio:w.src==="alt"?youdao+encodeURIComponent(w.en):google+w.file;
+  msg.textContent="🔊 "+w.en+" 재생 중";
+  a=new Audio(url);
+  a.play().catch(()=>{msg.textContent="⚠️ "+w.en+" 음원을 불러오지 못했습니다."});
+  a.onended=()=>msg.textContent="🔊 버튼을 누르면 영국식 발음이 재생됩니다."
+}
+</script>
+</body>
+</html>
