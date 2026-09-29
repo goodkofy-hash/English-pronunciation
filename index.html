@@ -2,69 +2,406 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>영국 영어 발음장</title>
+<title>영국 영어 발음장 & 스펠링 게임</title>
 <style>
-body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:rgb(244,247,246);padding:18px;display:flex;justify-content:center}
-.container{background:white;padding:22px;border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,.06);max-width:650px;width:100%}
-h1{text-align:center;color:rgb(44,62,80);font-size:22px;margin:5px 0 20px}
-.word-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 8px;border-bottom:1px solid rgb(235,235,235)}
+:root{
+  --blue:#2d7ff9;--green:#22a06b;--red:#e5484d;--text:#243447;
+  --muted:#6f7d8c;--border:#dce8f2;--bg:#eef7fb;--card:#fff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:linear-gradient(180deg,#e9f7ff,#f7fbfd);color:var(--text);
+  min-height:100vh;padding:16px
+}
+.app{max-width:760px;margin:0 auto}
+.header{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  margin-bottom:14px;flex-wrap:wrap
+}
+.title{font-size:22px;font-weight:800}
+.tabs{display:flex;gap:8px}
+.tab{
+  border:0;border-radius:10px;padding:10px 14px;font-weight:800;
+  background:#edf2f7;color:#415466
+}
+.tab.active{background:var(--blue);color:#fff}
+.card{
+  background:#fff;border-radius:18px;padding:20px;
+  box-shadow:0 8px 24px rgba(38,74,100,.10)
+}
+.hidden{display:none!important}
+
+/* 단어장 */
+.word-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 6px;border-bottom:1px solid #edf0f2
+}
 .word-info{display:flex;flex-direction:column;gap:5px}
 .english-line{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.english{font-size:19px;font-weight:700;color:rgb(44,62,80)}
-.pron{font-size:13px;color:rgb(100,110,115);background:rgb(239,243,245);padding:3px 6px;border-radius:5px}
-.meaning{font-size:14px;color:rgb(39,150,90)}
-.play{background:rgb(44,112,180);color:white;border:0;border-radius:8px;padding:10px 13px;font-size:14px;font-weight:bold;white-space:nowrap}
-.play:active{transform:scale(.96);background:rgb(35,90,150)}
-.msg{text-align:center;font-size:12px;color:rgb(110,110,110);margin-top:15px}
+.english{font-size:19px;font-weight:800}
+.pron-note{
+  font-size:13px;color:#64727e;background:#eef3f6;padding:3px 6px;border-radius:5px
+}
+.meaning{font-size:14px;color:#27965a}
+.play{
+  background:#2c70b4;color:#fff;border:0;border-radius:8px;
+  padding:10px 13px;font-size:14px;font-weight:800;white-space:nowrap
+}
+.page-note{
+  text-align:center;font-size:12px;color:var(--muted);margin-top:14px
+}
+.game-start-wrap{text-align:center;margin:18px 0 6px}
+.game-start{
+  border:0;border-radius:12px;background:var(--green);color:#fff;
+  padding:13px 22px;font-size:17px;font-weight:900
+}
+
+/* 게임 */
+.game-top{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:14px
+}
+.game-title{font-size:21px;font-weight:900}
+.score{
+  font-size:14px;color:var(--muted);background:#f6f9fb;
+  padding:8px 12px;border-radius:999px
+}
+.instruction{text-align:center;color:var(--muted);font-size:14px;margin-bottom:12px}
+.audioarea{text-align:center;margin:12px 0 18px}
+.listen{
+  border:0;border-radius:12px;background:var(--blue);color:#fff;
+  padding:13px 22px;font-size:17px;font-weight:900
+}
+.start{
+  border:0;border-radius:14px;background:var(--green);color:#fff;
+  padding:17px 28px;font-size:19px;font-weight:900;margin:32px auto;display:block
+}
+.answer{
+  display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:20px 0
+}
+.box{
+  width:40px;height:48px;border:2px solid var(--border);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:23px;font-weight:900
+}
+.box.filled{background:#f0f8ff;border-color:#82beff}
+.hyphen{
+  width:14px;display:flex;align-items:center;justify-content:center;
+  font-size:24px;font-weight:900
+}
+.tiles{
+  display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin:18px 0 22px
+}
+.tile{
+  min-width:46px;height:46px;border:0;border-radius:11px;
+  background:#eef7ff;box-shadow:0 3px 8px rgba(0,0,0,.10);
+  font-size:21px;font-weight:900;color:var(--text);padding:0 13px
+}
+.tile.used{visibility:hidden}
+.controls{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+.btn{border:0;border-radius:10px;padding:11px 15px;font-size:14px;font-weight:800}
+.secondary{background:#ebf1f6;color:#3c4b5a}
+.primary{background:#4c6982;color:#fff}
+.next{background:var(--green);color:#fff;display:none}
+.msg{text-align:center;min-height:29px;margin-top:15px;font-size:17px;font-weight:900}
+.ok{color:var(--green)}.bad{color:var(--red)}
+.reveal{text-align:center;margin-top:8px;font-size:16px;display:none}
+.wordReveal{font-size:25px;font-weight:900;color:var(--blue);margin-bottom:5px}
+.meaningReveal{color:#465564}
+.hintbtn{
+  display:block;margin:15px auto 0;border:0;border-radius:9px;
+  background:#fff5d7;padding:9px 14px;font-weight:800;color:#785a1e
+}
+.hinttext{text-align:center;color:#785a1e;font-size:15px;margin-top:8px;min-height:22px}
+.backbtn{
+  border:0;border-radius:10px;background:#edf2f7;color:#415466;
+  padding:9px 13px;font-weight:800
+}
+@media (max-width:520px){
+  body{padding:12px}.card{padding:16px 12px}.box{width:36px;height:44px;font-size:21px}
+  .tile{min-width:42px;height:44px;font-size:20px;padding:0 11px}
+}
 </style>
 </head>
 <body>
-<div class="container">
-<h1>🇬🇧 영국 영어 발음장</h1>
-<div id="list"></div>
-<div class="msg" id="msg">🔊 버튼을 누르면 영국식 발음이 재생됩니다.</div>
+<div class="app">
+  <div class="header">
+    <div class="title">🇬🇧 영국 영어 학습장</div>
+    <div class="tabs">
+      <button class="tab active" id="tabList" onclick="showList()">단어장</button>
+      <button class="tab" id="tabGame" onclick="showGame()">게임하기</button>
+    </div>
+  </div>
+
+  <section id="listSection" class="card">
+    <div id="wordList"></div>
+    <div class="game-start-wrap">
+      <button class="game-start" onclick="showGame()">🎮 게임하기</button>
+    </div>
+    <div class="page-note">🔊 버튼을 누르면 영국식 발음을 들을 수 있어요.</div>
+  </section>
+
+  <section id="gameSection" class="card hidden">
+    <div class="game-top">
+      <button class="backbtn" onclick="showList()">← 단어장</button>
+      <div class="score" id="score">정답 0</div>
+    </div>
+
+    <div id="startScreen">
+      <div class="game-title" style="text-align:center">🎮 듣고 맞히는 스펠링</div>
+      <div class="instruction" style="margin-top:10px">
+        영국식 발음을 듣고 알파벳을 골라 단어를 완성하세요.
+      </div>
+      <button class="start" onclick="startGame()">▶ 🔊 발음 듣고 시작</button>
+    </div>
+
+    <div id="gamePlay" class="hidden">
+      <div class="instruction">👂 발음을 잘 듣고 스펠링을 만들어보세요</div>
+      <div class="audioarea">
+        <button class="listen" onclick="playCurrentAudio()">🔊 다시 듣기</button>
+      </div>
+
+      <div class="answer" id="answer"></div>
+      <div class="tiles" id="tiles"></div>
+
+      <button class="hintbtn" onclick="showHint()">💡 뜻 힌트</button>
+      <div class="hinttext" id="hint"></div>
+
+      <div class="controls">
+        <button class="btn secondary" onclick="undo()">↩ 한 글자 지우기</button>
+        <button class="btn secondary" onclick="resetWord()">다시</button>
+        <button class="btn primary" onclick="checkAnswer()">정답 확인</button>
+        <button class="btn next" id="nextBtn" onclick="nextWord()">다음 단어 →</button>
+      </div>
+
+      <div class="msg" id="msg"></div>
+
+      <div class="reveal" id="reveal">
+        <div class="wordReveal" id="wordReveal"></div>
+        <div class="meaningReveal" id="meaningReveal"></div>
+      </div>
+    </div>
+  </section>
 </div>
+
 <script>
 const google="https://ssl.gstatic.com/dictionary/static/sounds/20200429/";
-const youdao="https://dict.youdao.com/dictvoice?type=1&audio=";
+const youdaoUK="https://dict.youdao.com/dictvoice?type=1&audio=";
 const ateAudio="https://dict.youdao.com/dictvoice?type=2&audio=ate";
+
 const words=[
-{en:"actually",ko:"액추얼리",mean:"실제로, 사실은",src:"alt"},
-{en:"aggravation",ko:"애그러베이션",mean:"악화, 짜증나는 일",file:"aggravation--_gb_1.mp3"},
-{en:"anchor",ko:"앵커",mean:"닻, 정신적 지주",file:"anchor--_gb_1.mp3"},
-{en:"appear",ko:"어피어",mean:"나타나다, ~처럼 보이다",file:"appear--_gb_1.mp3"},
-{en:"beautician",ko:"뷰티션",mean:"미용사",file:"beautician--_gb_1.mp3"},
-{en:"admitting",ko:"어드미팅",mean:"인정하는",src:"alt"},
-{en:"ambitious",ko:"앰비셔스",mean:"야심 있는",file:"ambitious--_gb_1.mp3"},
-{en:"answer",ko:"앤서",mean:"대답, 대답하다",file:"answer--_gb_1.mp3"},
-{en:"architect",ko:"아키텍트",mean:"건축가, 설계자",file:"architect--_gb_1.mp3"},
-{en:"adolescent",ko:"애덜레슨트",mean:"청소년, 사춘기의",file:"adolescent--_gb_1.mp3"},
-{en:"ambitiously",ko:"앰비셔슬리",mean:"야심 차게",file:"ambitiously--_gb_1.mp3"},
-{en:"anti-clockwise",ko:"앤티 클락와이즈",mean:"시계 반대 방향으로",src:"alt"},
-{en:"ate",ko:"에이트",mean:"먹었다 (eat의 과거형)",src:"ate"},
-{en:"beige",ko:"베이쥬",mean:"베이지색",file:"beige--_gb_1.mp3"},
-{en:"blankly",ko:"블랭클리",mean:"멍하니",file:"blankly--_gb_1.mp3"}
+  {en:"actually",ko:"액추얼리",mean:"실제로, 사실은",src:"alt"},
+  {en:"aggravation",ko:"애그러베이션",mean:"악화, 짜증나는 일",file:"aggravation--_gb_1.mp3"},
+  {en:"anchor",ko:"앵커",mean:"닻, 정신적 지주",file:"anchor--_gb_1.mp3"},
+  {en:"appear",ko:"어피어",mean:"나타나다, ~처럼 보이다",file:"appear--_gb_1.mp3"},
+  {en:"beautician",ko:"뷰티션",mean:"미용사",file:"beautician--_gb_1.mp3"},
+  {en:"admitting",ko:"어드미팅",mean:"인정하는",src:"alt"},
+  {en:"ambitious",ko:"앰비셔스",mean:"야심 있는",file:"ambitious--_gb_1.mp3"},
+  {en:"answer",ko:"앤서",mean:"대답, 대답하다",file:"answer--_gb_1.mp3"},
+  {en:"architect",ko:"아키텍트",mean:"건축가, 설계자",file:"architect--_gb_1.mp3"},
+  {en:"adolescent",ko:"애덜레슨트",mean:"청소년, 사춘기의",file:"adolescent--_gb_1.mp3"},
+  {en:"ambitiously",ko:"앰비셔슬리",mean:"야심 차게",file:"ambitiously--_gb_1.mp3"},
+  {en:"anti-clockwise",ko:"앤티 클락와이즈",mean:"시계 반대 방향으로",src:"alt"},
+  {en:"ate",ko:"에이트",mean:"먹었다 (eat의 과거형)",src:"ate"},
+  {en:"beige",ko:"베이쥬",mean:"베이지색",file:"beige--_gb_1.mp3"},
+  {en:"blankly",ko:"블랭클리",mean:"멍하니",file:"blankly--_gb_1.mp3"}
 ];
-const list=document.getElementById("list");
-const msg=document.getElementById("msg");
-let a=null;
+
+let audio=null;
+
+/* 단어장 */
+const wordList=document.getElementById("wordList");
 words.forEach((w,i)=>{
-  const d=document.createElement("div");
-  d.className="word-row";
-  d.innerHTML='<div class="word-info"><div class="english-line"><span class="english">'+(i+1)+'. '+w.en+'</span><span class="pron">'+w.ko+'</span></div><div class="meaning">'+w.mean+'</div></div><button class="play" onclick="playAudio('+i+')">🔊 UK 발음</button>';
-  list.appendChild(d)
+  const row=document.createElement("div");
+  row.className="word-row";
+  row.innerHTML=
+    '<div class="word-info">'+
+      '<div class="english-line">'+
+        '<span class="english">'+(i+1)+'. '+w.en+'</span>'+
+        '<span class="pron-note">'+w.ko+'</span>'+
+      '</div>'+
+      '<div class="meaning">'+w.mean+'</div>'+
+    '</div>'+
+    '<button class="play" onclick="playWordAudio('+i+')">🔊 UK 발음</button>';
+  wordList.appendChild(row);
 });
-function playAudio(i){
-  if(a){a.pause();a.currentTime=0}
-  const w=words[i];
-  let url=w.src==="ate"?ateAudio:w.src==="alt"?youdao+encodeURIComponent(w.en):google+w.file;
-  msg.textContent="🔊 "+w.en+" 재생 중";
-  a=new Audio(url);
-  a.play().catch(()=>{msg.textContent="⚠️ "+w.en+" 음원을 불러오지 못했습니다."});
-  a.onended=()=>msg.textContent="🔊 버튼을 누르면 영국식 발음이 재생됩니다."
+
+function audioUrl(w){
+  if(w.src==="ate") return ateAudio;
+  if(w.src==="alt") return youdaoUK+encodeURIComponent(w.en);
+  return google+w.file;
+}
+function playWordAudio(i){
+  if(audio){audio.pause();audio.currentTime=0}
+  audio=new Audio(audioUrl(words[i]));
+  audio.play();
+}
+
+/* 화면 전환 */
+function showList(){
+  document.getElementById("listSection").classList.remove("hidden");
+  document.getElementById("gameSection").classList.add("hidden");
+  document.getElementById("tabList").classList.add("active");
+  document.getElementById("tabGame").classList.remove("active");
+}
+function showGame(){
+  document.getElementById("listSection").classList.add("hidden");
+  document.getElementById("gameSection").classList.remove("hidden");
+  document.getElementById("tabList").classList.remove("active");
+  document.getElementById("tabGame").classList.add("active");
+}
+
+/* 게임 */
+const alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+let order=[...Array(words.length).keys()];
+let pos=0,correct=0,chosen=[],tiles=[];
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+shuffle(order);
+
+function current(){ return words[order[pos]]; }
+
+function makeTiles(){
+  const letters=current().en.replace(/-/g,"").toUpperCase().split("");
+  for(let i=0;i<5;i++){
+    letters.push(alphabet[Math.floor(Math.random()*alphabet.length)]);
+  }
+  return shuffle(letters.map((ch,i)=>({ch:ch,id:i+"_"+Math.random(),used:false})));
+}
+
+function startGame(){
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("gamePlay").classList.remove("hidden");
+  renderGame();
+  playCurrentAudio();
+}
+
+function renderGame(){
+  chosen=[];
+  tiles=makeTiles();
+  document.getElementById("msg").textContent="";
+  document.getElementById("msg").className="msg";
+  document.getElementById("hint").textContent="";
+  document.getElementById("reveal").style.display="none";
+  document.getElementById("nextBtn").style.display="none";
+  renderAnswer();
+  renderTiles();
+  updateScore();
+}
+
+function renderAnswer(){
+  const w=current().en.toUpperCase();
+  const a=document.getElementById("answer");
+  a.innerHTML="";
+  let ci=0;
+  for(const ch of w){
+    if(ch==="-"){
+      const s=document.createElement("div");
+      s.className="hyphen";
+      s.textContent="-";
+      a.appendChild(s);
+    }else{
+      const b=document.createElement("div");
+      b.className="box"+(chosen[ci]?" filled":"");
+      b.textContent=chosen[ci]?chosen[ci].ch:"";
+      a.appendChild(b);
+      ci++;
+    }
+  }
+}
+
+function renderTiles(){
+  const t=document.getElementById("tiles");
+  t.innerHTML="";
+  tiles.forEach(tile=>{
+    const b=document.createElement("button");
+    b.className="tile"+(tile.used?" used":"");
+    b.textContent=tile.ch;
+    b.onclick=()=>{
+      if(tile.used)return;
+      const targetLen=current().en.replace(/-/g,"").length;
+      if(chosen.length>=targetLen)return;
+      tile.used=true;
+      chosen.push(tile);
+      renderAnswer();
+      renderTiles();
+    };
+    t.appendChild(b);
+  });
+}
+
+function undo(){
+  const x=chosen.pop();
+  if(x){
+    x.used=false;
+    renderAnswer();
+    renderTiles();
+  }
+}
+
+function resetWord(){
+  tiles.forEach(x=>x.used=false);
+  chosen=[];
+  renderAnswer();
+  renderTiles();
+  document.getElementById("msg").textContent="";
+}
+
+function showHint(){
+  document.getElementById("hint").textContent=current().mean;
+}
+
+function checkAnswer(){
+  const target=current().en.replace(/-/g,"").toUpperCase();
+  const guess=chosen.map(x=>x.ch).join("");
+
+  if(guess.length!==target.length){
+    showMsg("아직 글자를 모두 고르지 않았어요.","bad");
+    return;
+  }
+
+  if(guess===target){
+    correct++;
+    showMsg("정답! 🎉","ok");
+    document.getElementById("wordReveal").textContent=current().en;
+    document.getElementById("meaningReveal").textContent=current().mean;
+    document.getElementById("reveal").style.display="block";
+    document.getElementById("nextBtn").style.display="inline-block";
+    updateScore();
+  }else{
+    showMsg("아쉬워요. 다시 들어보고 도전해보세요!","bad");
+  }
+}
+
+function showMsg(t,c){
+  const m=document.getElementById("msg");
+  m.textContent=t;
+  m.className="msg "+c;
+}
+
+function nextWord(){
+  pos=(pos+1)%order.length;
+  if(pos===0)shuffle(order);
+  renderGame();
+  playCurrentAudio();
+}
+
+function updateScore(){
+  document.getElementById("score").textContent="정답 "+correct;
+}
+
+function playCurrentAudio(){
+  if(audio){audio.pause();audio.currentTime=0}
+  audio=new Audio(audioUrl(current()));
+  audio.play().catch(()=>showMsg("🔊 다시 듣기 버튼을 눌러주세요.","bad"));
 }
 </script>
 </body>
